@@ -13,7 +13,10 @@ import net.itaem.util.HttpURLUtils;
 import net.itaem.util.Utility;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -70,6 +73,18 @@ public class ChooseAreaActivity extends Activity{
 		 * 1.获取布局，默认创建
 		 */
 		super.onCreate(savedInstanceState);
+		
+		/*
+		 * SharedPreferences文件读取city_selected标志位
+		 */
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this) ;
+		if (prefs.getBoolean("city_selected", false)) {
+			Intent intent = new Intent(this,WeatherActivity.class) ;
+			startActivity(intent) ;
+			finish() ;
+			return ;
+		}
+		
 		requestWindowFeature(Window.FEATURE_NO_TITLE) ;
 		setContentView(R.layout.choose_area) ;
 		
@@ -103,7 +118,11 @@ public class ChooseAreaActivity extends Activity{
 					queryCities() ;
 				}else if(currentLevel == LEVEL_CITY){
 					selectedCity = cityList.get(position) ;
-					Toast.makeText(ChooseAreaActivity.this, "city show", Toast.LENGTH_SHORT).show() ;
+					String cityCode = cityList.get(position).getCityCode() ;
+					Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class) ;
+					intent.putExtra("city_code", cityCode) ;
+					startActivity(intent) ;
+					finish(); 
 				}
 			}
 			
@@ -192,7 +211,9 @@ public class ChooseAreaActivity extends Activity{
 		 * 服务器抓取信息
 		 */
 		HttpURLUtils.doPost(address, params, new HttpCallbackListener(){
-
+			/*
+			 * 成功
+			 */
 			@Override
 			public <T> void onFinish(T t) {
 				// TODO Auto-generated method stub
@@ -231,6 +252,9 @@ public class ChooseAreaActivity extends Activity{
 				}
 			}
 			
+			/*
+			 * 失败
+			 */
 			@Override
 			public void onError(Exception e) {
 				// TODO Auto-generated method stub

@@ -10,8 +10,6 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Scanner;
 
-import android.util.Log;
-
 /**
  * 
  * UrlConnection抓包
@@ -20,9 +18,12 @@ import android.util.Log;
  */
 public class HttpURLUtils {
 	
-	public static void main(String[] args) throws Exception {
-		System.out.println(HttpURLUtils.doGet("http://webservice.webxml.com.cn/WebServices/WeatherWS.asmx/getSupportCityString?theRegionCode=3116"));
-	}
+	/*public static void main(String[] args) throws Exception {
+		Map<String,String> params = new HashMap<String,String>() ;
+		params.put("theCityCode", "2350") ;
+		params.put("theUserId", "") ;
+		System.out.println(HttpURLUtils.doPost("http://webservice.webxml.com.cn/WebServices/WeatherWS.asmx/getWeather", params));
+	}*/
 	
 	/**
 	 * 
@@ -63,7 +64,6 @@ public class HttpURLUtils {
 					//获取连接对象
 					connection = getURLConnection(urlStr);
 					
-					String str = receiveMsg(connection) ;
 					//获取返回信息
 					if(listener != null)
 						listener.onFinish(receiveMsg(connection)) ;
